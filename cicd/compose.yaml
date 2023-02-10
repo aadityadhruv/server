@@ -1,0 +1,18 @@
+version: 3
+services:
+  drone:
+    image: drone/drone:2
+    container_name: drone
+    environment:
+      - DRONE_GITEA_SERVER=https://git.aadityadhruv.com
+      - DRONE_GITEA_CLIENT_ID=****
+      - DRONE_GITEA_CLIENT_SECRET=****
+      - DRONE_RPC_SECRET=****
+      - DRONE_SERVER_HOST=dev.aadityadhruv.com
+      - DRONE_SERVER_PROTO=https
+    ports:
+      - 3080:80
+      - 3443:443
+    volumes:
+      - drone_data:/data:Z
+    restart: unless-stopped
