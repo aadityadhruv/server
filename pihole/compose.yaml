@@ -1,0 +1,17 @@
+version: "3"
+services:
+  pihole:
+    image: pihole/pihole
+    container_name: pihole
+    ports:
+      - "10.0.0.2:53:53/tcp"
+      - "10.0.0.2:53:53/udp"
+      - "8000:80/tcp"
+    environment:
+      TZ: 'America/Chicago'
+      WEBPASSWORD: ****
+    volumes:
+      - 'pihole:/etc/pihole:Z'
+      - 'pihole_dnsmaq:/etc/dnsmasq.d:Z'
+    restart: unless-stopped
+
