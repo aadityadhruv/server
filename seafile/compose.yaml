@@ -1,0 +1,63 @@
+version: '3.0'
+services:
+  db:
+    image: mariadb:latest
+    container_name: seafile-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=****
+      - MYSQL_LOG_CONSOLE=true
+    volumes:
+      - seafile_db:/var/lib/mysql:Z 
+    networks:
+      - seafile-net
+
+  memcached:
+    image: memcached:latest
+    container_name: seafile-memcached
+    entrypoint: memcached -m 256
+    networks:
+      - seafile-net
+
+  elasticsearch:
+    image: elasticsearch:7.16.2
+    container_name: seafile-elasticsearch
+    privileged: true
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+    mem_limit: 2g
+    volumes:
+      - seafile_elastisearch:/usr/share/elasticsearch/data:Z  # Requested, specifies the path to Elasticsearch data persistent store.
+    networks:
+      - seafile-net
+          
+  seafile:
+    image: docker.seadrive.org/seafileltd/seafile-pro-mc:latest
+    container_name: seafile
+    ports:
+      - "8001:80"
+        #      - "8002:443"  # If https is enabled, cancel the comment.
+    volumes:
+      - seafile:/shared:Z   # Requested, specifies the path to Seafile data persistent store.
+    environment:
+      - DB_HOST=***
+      - DB_ROOT_PASSWD=****
+      - TIME_ZONE=America/Chicago # Optional, default is UTC. Should be uncomment and set to your local time zone.
+      - SEAFILE_ADMIN_EMAIL=****
+      - SEAFILE_ADMIN_PASSWORD=****
+        #      - SEAFILE_SERVER_LETSENCRYPT=false # Whether to use https or not
+        #- SEAFILE_SERVER_HOSTNAME=192.168.1.51:8001 #Specifies your host name if https is enabled
+    depends_on:
+      - db
+      - memcached
+      - elasticsearch
+    networks:
+      - seafile-net
+
+networks:
+  seafile-net:
