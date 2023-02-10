@@ -1,0 +1,21 @@
+version: '2.4'
+
+services:
+    archivebox:
+        image: ${DOCKER_IMAGE:-archivebox/archivebox:master}
+        command: server --quick-init 0.0.0.0:8000
+        ports:
+            - 10000:8000
+        environment:
+            - ALLOWED_HOSTS=*                   
+            - MEDIA_MAX_SIZE=750m
+            - PUBLIC_INDEX=False
+            - PUBLIC_SNAPSHOTS=False
+            - PUBLIC_ADD_VIEW=False
+            - SAVE_PDF=False
+            - SAVE_SCREENSHOT=False
+            - SAVE_DOM=False
+            - SAVE_GIT=False
+            - SAVE_MEDIA=False
+        volumes:
+          - ./data:/data:Z
