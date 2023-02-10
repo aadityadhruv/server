@@ -1,0 +1,14 @@
+---
+version: "3"
+services:
+  actual:
+    image: jlongster/actual-server
+    container_name: actual-server 
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 5006:5006 
+    volumes:
+      - actual:/data:Z
+    restart: unless-stopped
